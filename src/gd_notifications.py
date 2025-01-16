@@ -1,8 +1,8 @@
 import os
 import json
 import urllib.request
-import boto3
 from datetime import datetime, timedelta, timezone
+import boto3
 
 def format_game_data(game):
     status = game.get("Status", "Unknown")
@@ -12,7 +12,6 @@ def format_game_data(game):
     start_time = game.get("DateTime", "Unknown")
     channel = game.get("Channel", "Unknown")
     
-    # Format quarters
     quarters = game.get("Quarters", [])
     quarter_scores = ', '.join([f"Q{q['Number']}: {q.get('AwayScore', 'N/A')}-{q.get('HomeScore', 'N/A')}" for q in quarters])
     
@@ -49,44 +48,91 @@ def format_game_data(game):
         )
 
 def lambda_handler(event, context):
-    # Get environment variables
     api_key = os.getenv("NBA_API_KEY")
     sns_topic_arn = os.getenv("SNS_TOPIC_ARN")
     sns_client = boto3.client("sns")
-    
-    # Adjust for Central Time (UTC-6)
+    dynamodb = boto3.resource('dynamodb')
+    table_name = os.getenv("DYNAMODB_TABLE").strip()
+    table = dynamodb.Table(table_name)
+
     utc_now = datetime.now(timezone.utc)
-    central_time = utc_now - timedelta(hours=6)  # Central Time is UTC-6
+    central_time = utc_now - timedelta(hours=6)
     today_date = central_time.strftime("%Y-%m-%d")
     
-    print(f"Fetching games for date: {today_date}")
-    
-    # Fetch data from the API
     api_url = f"https://api.sportsdata.io/v3/nba/scores/json/GamesByDate/{today_date}?key={api_key}"
-    print(today_date)
-     
+    
     try:
         with urllib.request.urlopen(api_url) as response:
             data = json.loads(response.read().decode())
-            print(json.dumps(data, indent=4))  # Debugging: log the raw data
+            if not data:
+                return {"statusCode": 404, "body": "No games available"}
     except Exception as e:
-        print(f"Error fetching data from API: {e}")
-        return {"statusCode": 500, "body": "Error fetching data"}
+        return {"statusCode": 500, "body": f"Error fetching data: {e}"}
     
-    # Include all games (final, in-progress, and scheduled)
     messages = [format_game_data(game) for game in data]
     final_message = "\n---\n".join(messages) if messages else "No games available for today."
     
-    # Publish to SNS
+    game_items = []
+    for game in data:
+        try:
+            item = {
+                'GameID': str(game.get('GameID', 'Unknown')),
+                'DateTime': game.get('DateTime'),
+                'Status': game.get('Status', 'Unknown'),
+                'AwayTeam': game.get('AwayTeam', 'Unknown'),
+                'HomeTeam': game.get('HomeTeam', 'Unknown'),
+                'StartTime': game.get('DateTime', 'Unknown'),
+                'Channel': game.get('Channel', 'Unknown'),
+                'LastUpdated': datetime.now().isoformat()
+            }
+            table.put_item(Item=item)
+            game_items.append(item)
+        except Exception as e:
+            return {"statusCode": 500, "body": f"Error pushing data to DynamoDB: {e}"}
+    
     try:
         sns_client.publish(
             TopicArn=sns_topic_arn,
             Message=final_message,
             Subject="NBA Game Updates"
         )
-        print("Message published to SNS successfully.")
     except Exception as e:
-        print(f"Error publishing to SNS: {e}")
-        return {"statusCode": 500, "body": "Error publishing to SNS"}
+        return {"statusCode": 500, "body": f"Error publishing to SNS: {e}"}
     
-    return {"statusCode": 200, "body": "Data processed and sent to SNS"}
+    return {
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+        },
+        "body": json.dumps({
+            "data": game_items
+        })
+    }
+
+# Additional handler for fetching games from DynamoDB
+async def fetch_games_handler(event):
+    try:
+        dynamodb = boto3.client('dynamodb')
+        params = {
+            "TableName": "NBARESULTS",  # Replace with your table name
+        }
+
+        result = await dynamodb.scan(params).promise()  # Fetch all records from the table
+        games = result.get('Items', [])
+
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET",  # Enable CORS for your frontend
+            },
+            "body": json.dumps(games),  # Return games as an array of objects
+        }
+    except Exception as error:
+        print("Error fetching data from DynamoDB:", error)
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "Failed to fetch data"}),
+        }

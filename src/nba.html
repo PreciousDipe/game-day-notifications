@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NBA Games</title>
+  <link rel="stylesheet" href="nba.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">NBA GAMES NOTIFICATIONS</div>
+  </header>
+  <main>
+    <section class="date-picker">
+      <button>&lt;</button>
+      <span></span>
+      <button>&gt;</button>
+    </section>
+
+    <div class="toggle-scores">
+      <label for="hide-scores">HIDE SCORES</label>
+      <input type="checkbox" id="hide-scores">
+    </div>
+
+    <section class="games">
+      <div class="game">
+        <div class="teams">
+        </div>
+        <div class="score">
+          <span class="final-score"></span>
+          <span></span>
+          <span class="final-score"></span>
+        </div>
+        <div class="team">
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="nba.js"></script>
+</body>
+</html>
