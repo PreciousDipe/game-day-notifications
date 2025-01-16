@@ -1,14 +1,3 @@
-// Toggle the visibility of scores
-const hideScoresCheckbox = document.getElementById("hide-scores");
-const games = document.querySelectorAll(".game .score");
-
-hideScoresCheckbox.addEventListener("change", (e) => {
-  const hideScores = e.target.checked;
-  games.forEach((score) => {
-    score.style.display = hideScores ? "none" : "flex";
-  });
-});
-
 // Date navigation functionality
 const datePicker = document.querySelector(".date-picker span");
 const previousButton = document.querySelector(".date-picker button:first-child");
