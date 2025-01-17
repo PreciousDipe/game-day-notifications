@@ -10,15 +10,9 @@ This project is an alert system that sends real-time NBA game day score notifica
 ---
 link to the [NBA Games Notification](https://preciousdipe.github.io/game-day-notifications/nba.html)
 ---
-## **Features**
-- Fetches live NBA game scores using an external API.
-- Sends formatted score updates to subscribers via SMS/Email using Amazon SNS.
-- Scheduled automation for regular updates using Amazon EventBridge.
-- Designed with security in mind, following the principle of least privilege for IAM roles.
-
 ## **Prerequisites**
 - Free account with subscription and API Key at [sportsdata.io](https://sportsdata.io/)
-- Personal AWS account with basic understanding of AWS and Python
+- Personal AWS account with a basic understanding of AWS and Python
 
 ---
 
@@ -44,7 +38,7 @@ game-day-notifications/
 ├── policies/
 │   ├── gb_sns_policy.json           # SNS publishing permissions
 ├── .gitignore
-├── nba.html            # Main html code
+├── nba.html            # Main HTML code
 └── README.md                        # Project documentation
 ```
 
@@ -58,7 +52,7 @@ cd game-day-notifications
 
 ### **What I Learned**
 1. Designing a notification system with AWS SNS and Lambda.
-2. Securing AWS services with least privilege IAM policies.
+2. Securing AWS services with the least privilege IAM policies.
 3. Automating workflows using EventBridge.
 4. Integrating external APIs into cloud-based workflows.
 5. Storing extracted data in DynamoDB to enable personalized notifications and improve user engagement.
