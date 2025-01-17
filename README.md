@@ -3,8 +3,13 @@
 ## **Project Overview**
 This project is an alert system that sends real-time NBA game day score notifications to a webpage and subscribed users via HTTP requests and SMS/Email. It leverages **Amazon SNS**, **AWS Lambda and Python**, **Amazon EvenBridge**, **NBA APIs**, **Amazon Dynamodb**, and **Web UI (HTML, CSS, and Javascript)** to provide sports fans with up-to-date game information. The project demonstrates cloud computing principles and efficient notification mechanisms.
 
----
 
+## **Technical Architecture**
+![nba_API](https://github.com/PreciousDipe/game-day-notifications/blob/main/assets/game-day-notifications.drawio.svg)
+
+---
+link to the NBA Notification Webpage ![link](https://preciousdipe.github.io/game-day-notifications/nba.html)
+---
 ## **Features**
 - Fetches live NBA game scores using an external API.
 - Sends formatted score updates to subscribers via SMS/Email using Amazon SNS.
@@ -14,12 +19,6 @@ This project is an alert system that sends real-time NBA game day score notifica
 ## **Prerequisites**
 - Free account with subscription and API Key at [sportsdata.io](https://sportsdata.io/)
 - Personal AWS account with basic understanding of AWS and Python
-
----
-
-## **Technical Architecture**
-![nba_API](https://github.com/PreciousDipe/game-day-notifications/blob/main/assets/game-day-notifications.drawio.svg)
-
 
 ---
 
