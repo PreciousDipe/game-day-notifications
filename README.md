@@ -8,7 +8,7 @@ This project is an alert system that sends real-time NBA game day score notifica
 ![nba_API](https://github.com/PreciousDipe/game-day-notifications/blob/main/assets/game-day-notifications.drawio.svg)
 
 ---
-link to the NBA Notification Webpage ![link](https://preciousdipe.github.io/game-day-notifications/nba.html)
+link to the [NBA Notification Webpage](https://preciousdipe.github.io/game-day-notifications/nba.html)
 ---
 ## **Features**
 - Fetches live NBA game scores using an external API.
