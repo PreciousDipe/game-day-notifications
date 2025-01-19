@@ -8,8 +8,6 @@ This project is an alert system that sends real-time NBA game day score notifica
 ![nba_API](https://github.com/PreciousDipe/game-day-notifications/blob/main/assets/game-day-notifications.drawio.svg)
 
 ---
-link to the [NBA Games Notification](https://preciousdipe.github.io/game-day-notifications/nba.html)
----
 ## **Prerequisites**
 - Free account with subscription and API Key at [sportsdata.io](https://sportsdata.io/)
 - Personal AWS account with a basic understanding of AWS and Python
